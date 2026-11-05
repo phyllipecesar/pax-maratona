@@ -155,11 +155,11 @@ main{max-width:640px;margin:0 auto;padding-block:20px 80px;padding-left:max(20px
     <!-- Etapa 3: Pax -->
     <section class="page" data-page="3" hidden>
       <div class="meta">3 de 3 · sobre a Pax</div>
-      <h2 class="q">Você já conhecia a Pax?</h2>
-      <div class="radio" role="radiogroup" aria-label="Você já conhecia a Pax?" id="conhecia">
+      <h2 class="q">Você já conhecia a Pax antes da Final Brasileira?</h2>
+      <div class="radio" role="radiogroup" aria-label="Você já conhecia a Pax antes da Final Brasileira?" id="conhecia">
         <button type="button" class="chip" role="radio" aria-checked="false" data-v="Sim, já conhecia">Sim, já conhecia</button>
         <button type="button" class="chip" role="radio" aria-checked="false" data-v="Já tinha ouvido falar">Já tinha ouvido falar</button>
-        <button type="button" class="chip" role="radio" aria-checked="false" data-v="Não, conheci hoje">Não, conheci hoje</button>
+        <button type="button" class="chip" role="radio" aria-checked="false" data-v="Não conhecia">Não conhecia</button>
       </div>
       <div class="field"><label>O que você quer conhecer mais? <span class="hint">(marque quantos quiser)</span></label>
         <div class="chips" id="interesses">
@@ -319,7 +319,7 @@ async function send(data){
 }
 $('#form').addEventListener('submit',async e=>{
   e.preventDefault();
-  if(!state.conhecia){ err(3,'Conta pra gente: você já conhecia a Pax?'); return; }
+  if(!state.conhecia){ err(3,'Conta pra gente: você já conhecia a Pax antes da Final?'); return; }
   const btn=$('#send'); btn.disabled=true; btn.textContent='Enviando…'; err(3,'');
   try{ await send(payload()); show(4); }
   catch(ex){
