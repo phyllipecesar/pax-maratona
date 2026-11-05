@@ -1,0 +1,336 @@
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body><title>Pax na Maratona</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one column, phone-first; header band in preto with grafismo, form card on offwhite. Pax tokens below. */
+@font-face{font-family:'Arizona Flare';src:url('fonts/ABCArizonaFlare-Light.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:'STK Bureau Sans';src:url('fonts/STKBureauSans-Regular.woff') format('woff');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'STK Bureau Sans';src:url('fonts/STKBureauSans-SemiBold.woff') format('woff');font-weight:600;font-style:normal;font-display:swap}
+:root{
+  --preto:#262626; --creme:#DBD5CE; --creme-logo:#EAE9DD; --offwhite:#F0F0F0; --amarelo:#E6FF6C; --ok:#5DBB63;
+  --bg:#F0F0F0; --fg:#262626; --fg-muted:rgba(38,38,38,.64); --fg-soft:rgba(38,38,38,.40);
+  --card:#FFFFFF; --line:#262626; --line-soft:rgba(38,38,38,.20);
+  --band:#262626; --band-fg:#DBD5CE; --band-fg-muted:rgba(219,213,206,.70); --band-line:rgba(234,233,221,.28); --plane:rgba(69,69,69,.80);
+  --btn-bg:#262626; --btn-fg:#EAE9DD;
+  --font-display:'Arizona Flare','Times New Roman',serif;
+  --font-text:'STK Bureau Sans','Helvetica Neue',Arial,sans-serif;
+  --r-sm:10px; --r-md:14px; --r-lg:16px; --r-xl:24px; --r-2xl:36px;
+  --ease:cubic-bezier(.2,0,0,1); --dur:280ms;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#262626; --fg:#DBD5CE; --fg-muted:rgba(219,213,206,.70); --fg-soft:rgba(219,213,206,.45);
+  --card:#3A3A3A; --line:#DBD5CE; --line-soft:rgba(234,233,221,.28);
+  --btn-bg:#EAE9DD; --btn-fg:#262626; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#262626; --fg:#DBD5CE; --fg-muted:rgba(219,213,206,.70); --fg-soft:rgba(219,213,206,.45);
+  --card:#3A3A3A; --line:#DBD5CE; --line-soft:rgba(234,233,221,.28);
+  --btn-bg:#EAE9DD; --btn-fg:#262626; color-scheme:dark }
+
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-text);font-size:16px;line-height:1.3;letter-spacing:-.02em;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--band)}
+*{box-sizing:border-box}
+h1,h2,h3{margin:0;font-weight:300;text-wrap:balance}
+p{margin:0}
+button,input,textarea{font:inherit;letter-spacing:inherit;color:inherit}
+
+.band{background:var(--band);color:var(--band-fg);position:relative;overflow:hidden}
+.band .in{position:relative;max-width:640px;margin:0 auto;padding-block:20px 40px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.plane{position:absolute;display:block;background:var(--plane);filter:blur(70px);pointer-events:none}
+.plane.a{width:56%;height:120%;left:-12%;top:-20%;transform:rotate(20deg)}
+.plane.b{width:44%;height:130%;right:-11%;top:-30%;transform:rotate(-20deg);opacity:.9}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--band-fg-muted)}
+.top svg{height:22px;width:auto;display:block}
+.band h1{font-family:var(--font-display);font-size:clamp(40px,11vw,64px);line-height:.9;letter-spacing:-.03em;margin-top:40px;color:var(--creme-logo)}
+.band .lead{margin-top:20px;font-size:16px;max-width:34ch;color:var(--band-fg)}
+.steps{display:flex;gap:8px;margin-top:20px}
+.steps i{display:block;height:2px;flex:1;background:var(--band-line);border-radius:999px;transition:background var(--dur) var(--ease)}
+.steps i.on{background:var(--amarelo)}
+
+main{max-width:640px;margin:0 auto;padding-block:20px 80px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.card{background:var(--card);border:1px solid var(--line-soft);border-radius:var(--r-xl);padding:20px;display:flex;flex-direction:column;gap:20px}
+.page{display:flex;flex-direction:column;gap:20px;animation:in var(--dur) var(--ease)}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.page{animation:none}}
+.meta{font-size:11px;letter-spacing:.02em;color:var(--fg-muted)}
+.q{font-family:var(--font-display);font-size:28px;line-height:1.08;letter-spacing:-.03em}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:12px;color:var(--fg-muted)}
+.field input,.field textarea{width:100%;padding:12px 14px;border:1px solid var(--line-soft);border-radius:var(--r-md);background:transparent;outline:none;font-size:16px;transition:border-color var(--dur) var(--ease)}
+.field input:focus,.field textarea:focus{border-color:var(--line);box-shadow:0 0 0 2px var(--amarelo)}
+.field textarea{min-height:88px;resize:vertical}
+.hint{font-size:12px;color:var(--fg-muted)}
+.err{font-size:12px;color:var(--fg);padding:8px 12px;border:1px solid var(--line);border-radius:var(--r-sm)}
+.err[hidden]{display:none}
+
+.ac{position:relative}
+.ac-list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:5;background:var(--card);border:1px solid var(--line-soft);border-radius:var(--r-md);max-height:280px;overflow:auto;padding:4px}
+.ac-list button{display:flex;flex-direction:column;gap:2px;width:100%;text-align:left;background:none;border:0;padding:10px 12px;border-radius:var(--r-sm);cursor:pointer}
+.ac-list button:hover,.ac-list button:focus{background:var(--bg);outline:none}
+.ac-list .s{font-size:12px;color:var(--fg-muted)}
+.ac-list .none{padding:10px 12px;font-size:14px;color:var(--fg-muted)}
+
+.who{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--line-soft);border-radius:var(--r-md)}
+.who b{font-weight:600}
+.who .s{font-size:13px;color:var(--fg-muted)}
+.who[hidden]{display:none}
+.link{background:none;border:0;padding:0;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;cursor:pointer;font-size:14px;color:var(--fg);align-self:flex-start}
+.link:hover{color:var(--fg-muted);text-decoration-color:var(--amarelo)}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:14px;padding:8px 14px;border:1px solid var(--line-soft);border-radius:var(--r-sm);background:transparent;cursor:pointer;transition:opacity var(--dur) var(--ease)}
+.chip:hover{opacity:.85}
+.chip:focus-visible{outline:none;border-color:var(--line);box-shadow:0 0 0 2px var(--amarelo)}
+.chip[aria-pressed="true"],.chip[aria-checked="true"]{background:var(--btn-bg);color:var(--btn-fg);border-color:transparent}
+.radio{display:flex;flex-direction:column;gap:8px}
+.radio .chip{justify-content:flex-start}
+
+.actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:500;font-size:15px;padding:12px 20px;border-radius:var(--r-lg);border:1px solid transparent;cursor:pointer;transition:opacity var(--dur) var(--ease);background:var(--btn-bg);color:var(--btn-fg)}
+.btn:hover{opacity:.85}.btn:active{opacity:.7}.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:focus-visible{outline:none;border-color:var(--line);box-shadow:0 0 0 2px var(--amarelo)}
+.btn.accent{background:var(--amarelo);color:var(--preto)}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line-soft)}
+.spacer{flex:1}
+.done .q{font-size:40px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+.stat{border:1px solid var(--line-soft);border-radius:var(--r-md);padding:12px}
+.stat b{display:block;font-family:var(--font-display);font-weight:300;font-size:32px;line-height:.9;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat span{display:block;font-size:12px;color:var(--fg-muted);margin-top:6px}
+@media (max-width:420px){.stats{grid-template-columns:1fr 1fr 1fr}.stat b{font-size:26px}}
+.foot{max-width:640px;margin:0 auto;padding:0 20px 40px;font-size:11px;letter-spacing:.02em;color:var(--fg-soft);display:flex;align-items:center;gap:8px}
+.foot svg{height:12px;width:auto}
+[hidden]{display:none!important}
+</style>
+
+<header class="band">
+  <span class="plane a"></span><span class="plane b"></span>
+  <div class="in">
+    <div class="top">
+      <svg viewBox="0 0 397 113" fill="#EAE9DD" aria-label="Pax" role="img"><path d="M73.93 0L55.45 18.48L73.93 36.96L92.41 18.48L73.93 0Z"/><path d="M110.9 36.97L92.4199 55.45L110.9 73.93L129.38 55.45L110.9 36.97Z"/><path d="M36.98 36.98L0 73.95L18.48 92.43L55.46 55.45L36.98 36.97V36.98Z"/><path d="M73.93 73.9399L55.45 92.4199L73.93 110.9L92.41 92.4199L73.93 73.9399Z"/><path d="M155.55 0.0400391H199.38C223.14 0.0400391 238.4 13.37 238.4 33.92C238.4 54.47 223.15 68.92 199.38 68.92H174.65V110.83H155.54V0.0400391H155.55ZM198.58 52.71C211.75 52.71 219.13 45.97 219.13 33.92C219.13 22.68 211.74 16.26 198.58 16.26H174.66V52.71H198.58Z"/><path d="M237.44 88.68C237.44 54.32 290.27 69.25 290.27 53.19C290.27 49.02 287.06 42.27 275.18 42.27C265.22 42.27 258.96 46.93 258.32 55.28H240.66C241.3 36.82 255.59 27.02 275.5 27.02C290.75 27.02 308.26 32.64 308.26 56.08V87.39C308.26 96.38 308.58 103.93 310.67 110.83H293.33C292.21 107.3 291.89 103.6 291.72 100.07C285.14 108.26 274.86 112.75 263.94 112.75C248.2 112.75 237.45 103.92 237.45 88.67L237.44 88.68ZM290.27 81.45V69.09C282.4 77.76 255.43 71.34 255.43 87.55C255.43 94.78 260.73 98.47 268.92 98.47C279.52 98.47 290.28 92.05 290.28 81.45H290.27Z"/><path d="M356.26 79.8499L337.15 110.84H315.95L345.17 68.61L317.87 28.95H338.74L356.24 56.41L373.58 28.95H394.45L367.15 68.61L396.37 110.84H375.34L356.23 79.8499H356.26Z"/></svg>
+      <span>Final Brasileira · Uberlândia · nov 2026</span>
+    </div>
+    <h1 id="title">Oi, maratonista.</h1>
+    <p class="lead" id="lead">A Pax está na final. Deixa seu contato com a gente, leva menos de um minuto.</p>
+    <div class="steps" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+  </div>
+</header>
+
+<main>
+  <form id="form" class="card" novalidate autocomplete="off">
+
+    <!-- Etapa 1: nome -->
+    <section class="page" data-page="1">
+      <div class="meta">1 de 3 · quem é você</div>
+      <h2 class="q">Qual é o seu nome?</h2>
+      <div class="field ac">
+        <label for="nome">Nome</label>
+        <input id="nome" name="nome" type="text" placeholder="Comece a digitar" required autocapitalize="words" spellcheck="false">
+        <div id="ac" class="ac-list" hidden role="listbox"></div>
+        <span class="hint" id="roster-hint">Buscamos na lista dos 65 times classificados.</span>
+      </div>
+      <div id="who" class="who" hidden>
+        <b id="who-n"></b>
+        <span class="s" id="who-t"></span>
+        <span class="s" id="who-f"></span>
+      </div>
+      <button type="button" class="link" id="manual-btn">Não achei meu nome, vou preencher à mão</button>
+      <div id="manual" hidden style="display:flex;flex-direction:column;gap:12px">
+        <div class="field"><label for="m-fac">Faculdade</label><input id="m-fac" name="faculdade" type="text" placeholder="Ex.: UFU"></div>
+        <div class="field ac"><label for="m-time">Nome do time</label><input id="m-time" name="time" type="text" placeholder="Ex.: Praise the Sonic"><div id="ac-t" class="ac-list" hidden role="listbox"></div></div>
+      </div>
+      <p class="err" id="err1" hidden></p>
+      <div class="actions"><span class="spacer"></span><button type="button" class="btn" data-next="2">Continuar →</button></div>
+    </section>
+
+    <!-- Etapa 2: contato -->
+    <section class="page" data-page="2" hidden>
+      <div class="meta">2 de 3 · contato</div>
+      <h2 class="q">Como a gente fala com você?</h2>
+      <div class="field"><label for="tel">Telefone (WhatsApp)</label><input id="tel" name="telefone" type="tel" inputmode="tel" placeholder="(34) 9 9999-9999" required></div>
+      <div class="field"><label for="email">E-mail</label><input id="email" name="email" type="email" inputmode="email" placeholder="voce@exemplo.com" required></div>
+      <p class="err" id="err2" hidden></p>
+      <div class="actions"><button type="button" class="btn ghost" data-prev="1">← Voltar</button><span class="spacer"></span><button type="button" class="btn" data-next="3">Continuar →</button></div>
+    </section>
+
+    <!-- Etapa 3: Pax -->
+    <section class="page" data-page="3" hidden>
+      <div class="meta">3 de 3 · sobre a Pax</div>
+      <h2 class="q">Você já conhecia a Pax?</h2>
+      <div class="radio" role="radiogroup" aria-label="Você já conhecia a Pax?" id="conhecia">
+        <button type="button" class="chip" role="radio" aria-checked="false" data-v="Sim, já conhecia">Sim, já conhecia</button>
+        <button type="button" class="chip" role="radio" aria-checked="false" data-v="Já tinha ouvido falar">Já tinha ouvido falar</button>
+        <button type="button" class="chip" role="radio" aria-checked="false" data-v="Não, conheci hoje">Não, conheci hoje</button>
+      </div>
+      <div class="field"><label>O que você quer conhecer mais? <span class="hint">(marque quantos quiser)</span></label>
+        <div class="chips" id="interesses">
+          <button type="button" class="chip" aria-pressed="false" data-v="Engenharia e stack">Engenharia e stack</button>
+          <button type="button" class="chip" aria-pressed="false" data-v="Vagas e estágio">Vagas e estágio</button>
+          <button type="button" class="chip" aria-pressed="false" data-v="Como é trabalhar na Pax">Como é trabalhar na Pax</button>
+          <button type="button" class="chip" aria-pressed="false" data-v="Os casos com a polícia">Os casos com a polícia</button>
+          <button type="button" class="chip" aria-pressed="false" data-v="Visitar o escritório">Visitar o escritório</button>
+          <button type="button" class="chip" aria-pressed="false" data-v="Programação competitiva na Pax">Programação competitiva na Pax</button>
+        </div>
+      </div>
+      <div class="field"><label for="achou">O que achou da conversa? <span class="hint">(opcional)</span></label><textarea id="achou" name="achou" placeholder="Uma frase já ajuda"></textarea></div>
+      <div class="field"><label for="quem">Quem da Pax conversou com você? <span class="hint">(opcional)</span></label><input id="quem" name="quem" type="text" placeholder="Nome de quem te abordou"></div>
+      <p class="err" id="err3" hidden></p>
+      <div class="actions"><button type="button" class="btn ghost" data-prev="2">← Voltar</button><span class="spacer"></span><button type="submit" class="btn accent" id="send">Enviar</button></div>
+    </section>
+
+    <!-- Fim -->
+    <section class="page done" data-page="4" hidden>
+      <div class="meta">pronto</div>
+      <h2 class="q" id="done-title">Valeu.</h2>
+      <p id="done-text">A gente entra em contato. Boa prova.</p>
+      <div class="stats">
+        <div class="stat"><b>2×</b><span>taxa de elucidação em Luziânia</span></div>
+        <div class="stat"><b>−27%</b><span>no crime</span></div>
+        <div class="stat"><b>+90%</b><span>na percepção de segurança</span></div>
+      </div>
+      <div class="actions"><a class="btn ghost" href="https://pax.ai/" target="_blank" rel="noopener">pax.ai →</a><span class="spacer"></span><button type="button" class="btn" id="again">Nova inscrição</button></div>
+    </section>
+
+  </form>
+</main>
+<div class="foot"><svg viewBox="0 0 130 111" fill="currentColor" aria-hidden="true"><path d="M73.93 0L55.45 18.48L73.93 36.96L92.41 18.48L73.93 0Z"/><path d="M110.9 36.97L92.42 55.45L110.9 73.93L129.38 55.45L110.9 36.97Z"/><path d="M36.98 37.01L0 73.98L18.48 92.46L55.46 55.48L36.98 37Z"/><path d="M73.93 73.94L55.45 92.42L73.93 110.9L92.41 92.42L73.93 73.94Z"/></svg><span>Pax · seus dados ficam só com o time de recrutamento da Pax.</span></div>
+
+<script>
+// Onde as respostas vão. Com ENDPOINT vazio, a página grava no banco do artifact
+// (só funciona para quem está logado na organização). Com um Apps Script publicado
+// como web app, cole a URL aqui e hospede este HTML em qualquer lugar.
+const ENDPOINT = "https://script.google.com/macros/s/AKfycby3uW0drhaC_Ev0CFnNQ1FNUVE0NXdmfudbAElEf2NfkavkiZ41PQj8Kr_qaoPYFeGXlA/exec";
+let ROSTER=[{"n":"Carlos Cabral de Menezes Filho","u":"UFU","f":"Universidade Federal de Uberlândia","t":"Praise the Sonic","p":1},{"n":"Guilherme Cabral de Menezes","u":"UFU","f":"Universidade Federal de Uberlândia","t":"Praise the Sonic","p":1},{"n":"Luís Augusto Queiroz Martins","u":"UFU","f":"Universidade Federal de Uberlândia","t":"Praise the Sonic","p":1},{"n":"Pedro","u":"UNICAMP","f":"Universidade Estadual de Campinas","t":"Enemy Leo used Appeal! It's super effective! Pikachu fainted!","p":2},{"n":"Yvens Porto","u":"UNICAMP","f":"Universidade Estadual de Campinas","t":"Enemy Leo used Appeal! It's super effective! Pikachu fainted!","p":2},{"n":"Felipe Lourenço da Silva","u":"UF Santa Catarina","f":"Universidade Federal de Santa Catarina","t":"3 macacos infinitos com heurística","p":3},{"n":"Gabriel Castro Guimarães","u":"UF Santa Catarina","f":"Universidade Federal de Santa Catarina","t":"3 macacos infinitos com heurística","p":3},{"n":"Paulo Pimentel Regueira","u":"UF Santa Catarina","f":"Universidade Federal de Santa Catarina","t":"3 macacos infinitos com heurística","p":3},{"n":"João Victor Grangeiro Costa","u":"UFPE","f":"Universidade Federal de Pernambuco","t":"Shadow, o ouriço-cacheiro-viajante","p":4},{"n":"Samuell Henrique Carvalho Paes Costa","u":"UFPE","f":"Universidade Federal de Pernambuco","t":"Shadow, o ouriço-cacheiro-viajante","p":4},{"n":"Toni Cabral Amorim","u":"UFPE","f":"Universidade Federal de Pernambuco","t":"Shadow, o ouriço-cacheiro-viajante","p":4},{"n":"Caique Paiva","u":"UNICAMP","f":"Universidade Estadual de Campinas","t":"Los Pitufos","p":5},{"n":"Juan","u":"UNICAMP","f":"Universidade Estadual de Campinas","t":"Los Pitufos","p":5},{"n":"Marcos Paulo Evers Cordeiro","u":"UNICAMP","f":"Universidade Estadual de Campinas","t":"Los Pitufos","p":5},{"n":"Eduardo Quirino","u":"UnB","f":"Universidade de Brasília","t":"Flamengokart 8 Deluxe","p":6},{"n":"Lucas Cruz","u":"UnB","f":"Universidade de Brasília","t":"Flamengokart 8 Deluxe","p":6},{"n":"Wilson Guimarães","u":"UnB","f":"Universidade de Brasília","t":"Flamengokart 8 Deluxe","p":6},{"n":"Gabriel Vieira","u":"UFMG","f":"Universidade Federal de Minas Gerais","t":"passamos o construtivo no perchute","p":7},{"n":"Matheus Torres Prates","u":"UFMG","f":"Universidade Federal de Minas Gerais","t":"passamos o construtivo no perchute","p":7},{"n":"Thiago Martins Lima Assis","u":"UFMG","f":"Universidade Federal de Minas Gerais","t":"passamos o construtivo no perchute","p":7},{"n":"Emerson Junior","u":"UnB","f":"Universidade de Brasília","t":"Abri a caixa e meu gato virou um WA","p":8},{"n":"Iasmim Freitas","u":"UnB","f":"Universidade de Brasília","t":"Abri a caixa e meu gato virou um WA","p":8},{"n":"Pedro Beneveli","u":"UnB","f":"Universidade de Brasília","t":"Abri a caixa e meu gato virou um WA","p":8},{"n":"Frederico Rocha Boller","u":"UFRJ","f":"Universidade Federal do Rio de Janeiro","t":"Chris, aqui acabou","p":10},{"n":"Luís Rafael Sena","u":"UFRJ","f":"Universidade Federal do Rio de Janeiro","t":"Chris, aqui acabou","p":10},{"n":"Marcos Henrique Junqueira Muniz Barbi Silva","u":"UFRJ","f":"Universidade Federal do Rio de Janeiro","t":"Chris, aqui acabou","p":10},{"n":"Tiago Silva","u":"UFRJ","f":"Universidade Federal do Rio de Janeiro","t":"Chris, aqui acabou","p":10},{"n":"Francisco Eduardo Fontenele","u":"USP Ribeirão Preto","f":"Universidade de São Paulo - Campus Ribeirão Preto","t":"brutal","p":14},{"n":"Gustavo Bender","u":"USP Ribeirão Preto","f":"Universidade de São Paulo - Campus Ribeirão Preto","t":"brutal","p":14},{"n":"Miguel de Carvalho Oliveira","u":"USP Ribeirão Preto","f":"Universidade de São Paulo - Campus Ribeirão Preto","t":"brutal","p":14},{"n":"Brunno Rezende dos Santos","u":"ITA","f":"Instituto Tecnológico de Aeronautica","t":"Acho que é fluxo","p":15},{"n":"Gabriel Tedesco","u":"ITA","f":"Instituto Tecnológico de Aeronautica","t":"Acho que é fluxo","p":15},{"n":"Danilo Dias","u":"UFG","f":"Universidade Federal de Goiás","t":"Monkeys： AKBIDKH","p":16},{"n":"Dimas Heitor Mesquita","u":"UFG","f":"Universidade Federal de Goiás","t":"Monkeys： AKBIDKH","p":16},{"n":"Felipe do Espírito Santo Sabino","u":"UFG","f":"Universidade Federal de Goiás","t":"Monkeys： AKBIDKH","p":16},{"n":"Miguel Batista","u":"PUC Rio de Janeiro","f":"Pontificia Universidade Catolica do Rio de Janeiro","t":"Viúvos do Thomaz","p":17},{"n":"Cauê Fornielles da Costa","u":"USP","f":"Universidade de São Paulo","t":"Em minha defesa, ainda tava tentando resolver o warm-up","p":18},{"n":"Pedro Matheus Simões Ferreira","u":"USP","f":"Universidade de São Paulo","t":"Em minha defesa, ainda tava tentando resolver o warm-up","p":18},{"n":"Pedro Miguelez","u":"USP","f":"Universidade de São Paulo","t":"Em minha defesa, ainda tava tentando resolver o warm-up","p":18},{"n":"Dante Brito","u":"USP São Carlos","f":"Universidade de São Paulo - Campus de São Carlos","t":"Apenas caqui em Mogi das Cruzes - SP","p":19},{"n":"Laila Melo Vaz Lopes","u":"UFMG","f":"Universidade Federal de Minas Gerais","t":"Fa clube do wmwmjr","p":27},{"n":"Luis Higino","u":"UFMG","f":"Universidade Federal de Minas Gerais","t":"Fa clube do wmwmjr","p":27},{"n":"Manuel Ferraz","u":"UFMG","f":"Universidade Federal de Minas Gerais","t":"Fa clube do wmwmjr","p":27},{"n":"Dyogo Bendo","u":"UNIOESTE Foz do Iguaçu","f":"Universidade Estadual do Oeste do Paraná - Campus de Foz do Iguaçu","t":"Sem saber que era só fazer, ele foi lá e não fez","p":30},{"n":"Gabriel Mandelli","u":"UNIOESTE Foz do Iguaçu","f":"Universidade Estadual do Oeste do Paraná - Campus de Foz do Iguaçu","t":"Sem saber que era só fazer, ele foi lá e não fez","p":30},{"n":"Gabriel Oliveira Willemann","u":"UDESC","f":"Universidade do Estado de Santa Catarina","t":"Catarinense* Not Found","p":32},{"n":"João Marcos","u":"UDESC","f":"Universidade do Estado de Santa Catarina","t":"Catarinense* Not Found","p":32},{"n":"Allann Barbosa Cintra","u":"PUC-Goiás","f":"Pontifícia Universidade Católica de Goiás","t":"BFS²： Bora Fazer Six Seven","p":33},{"n":"João Guilherme Guimarães e Silva","u":"PUC-Goiás","f":"Pontifícia Universidade Católica de Goiás","t":"BFS²： Bora Fazer Six Seven","p":33},{"n":"Matheus Henrique Campos","u":"PUC-Goiás","f":"Pontifícia Universidade Católica de Goiás","t":"BFS²： Bora Fazer Six Seven","p":33},{"n":"Bruno Emanoel Loiola Xavier","u":"UFBA","f":"Universidade Federal da Bahia","t":"Império Baiantino","p":39},{"n":"Matheus Queiroz","u":"UFBA","f":"Universidade Federal da Bahia","t":"Império Baiantino","p":39},{"n":"Pedro Simoes","u":"UFCG","f":"Universidade Federal de Campina Grande","t":"Why don’t we all aim for AC on every problem?","p":41},{"n":"Lucas Damasceno","u":"IMPA","f":"Instituto de Matemática Pura e Aplicada","t":"Temos que ver isso ai hein","p":46},{"n":"Bernardo Castaldelli","u":"FEI","f":"Centro Universitário da FEI","t":"Três Programadores Demais","p":51},{"n":"Rafael Hideaki Yara","u":"FEI","f":"Centro Universitário da FEI","t":"Três Programadores Demais","p":51},{"n":"Gabriel Abreu","u":"UFABC","f":"Universidade Federal do ABC","t":"Os alunos mais fracos do Bigas","p":60},{"n":"Gabriel Frigo","u":"UFABC","f":"Universidade Federal do ABC","t":"Os alunos mais fracos do Bigas","p":60},{"n":"Lucas Lorena","u":"UFABC","f":"Universidade Federal do ABC","t":"Os alunos mais fracos do Bigas","p":60},{"n":"Yogi Nam","u":"UnB/FGA","f":"Universidade de Brasília - Faculdade UnB Gama","t":"Dedinhos Mágicos","p":64},{"n":"Eric Rodrigues Gomes","u":"UFC","f":"Universidade Federal do Ceará","t":"Venderam meu Cabrito","p":65},{"n":"Guilherme Gondim Lima Góes de Araújo","u":"UFC","f":"Universidade Federal do Ceará","t":"Venderam meu Cabrito","p":65},{"n":"Paulo Eduardo Conrado Marinho","u":"UFC","f":"Universidade Federal do Ceará","t":"Venderam meu Cabrito","p":65},{"n":"Davi Romão","u":"UFAL","f":"Universidade Federal de Alagoas","t":"comi tle e agora tô com fastio","p":66},{"n":"Camila Ribeiro","u":"UFMG","f":"Universidade Federal de Minas Gerais","t":"Guerreiras do K.pop()","p":72},{"n":"Gabriela Costa","u":"UFMG","f":"Universidade Federal de Minas Gerais","t":"Guerreiras do K.pop()","p":72},{"n":"Indra Ribeiro","u":"UFMG","f":"Universidade Federal de Minas Gerais","t":"Guerreiras do K.pop()","p":72},{"n":"Eduardo Marinho","u":"UFRN","f":"Universidade Federal do Rio Grande do Norte","t":"Alice in the Uberland","p":75},{"n":"Ian Gabriel","u":"UFRN","f":"Universidade Federal do Rio Grande do Norte","t":"Alice in the Uberland","p":75},{"n":"Lucas Apolonio de Amorim","u":"UFRN","f":"Universidade Federal do Rio Grande do Norte","t":"Alice in the Uberland","p":75},{"n":"Ryan Sousa","u":"UFPI","f":"Universidade Federal do Piauí","t":"Chuta uma DP aí","p":89},{"n":"Enriconi","u":"UNISINOS","f":"Universidade do Vale do Rio dos Sinos","t":"o problema mais difícil é escolher o nome da equipe","p":94},{"n":"Angelo Man de Oliveira","u":"UFPR-JA","f":"Universidade Federal do Paraná - Jandaia do Sul","t":"Sucumbam","p":105},{"n":"Nícolas Alves Pessoa Rodrigues","u":"UFPR-JA","f":"Universidade Federal do Paraná - Jandaia do Sul","t":"Sucumbam","p":105},{"n":"Samuel Marques Tomazini","u":"UFPR-JA","f":"Universidade Federal do Paraná - Jandaia do Sul","t":"Sucumbam","p":105},{"n":"Felipe Spitale","u":"IComp/UFAM","f":"Universidade Federal do Amazonas - Instituto de Computação","t":"Ex Dr. Luan Cuidará Disso","p":107},{"n":"Luan Gabriel","u":"IComp/UFAM","f":"Universidade Federal do Amazonas - Instituto de Computação","t":"Ex Dr. Luan Cuidará Disso","p":107},{"n":"Rebeca Oliveira","u":"IComp/UFAM","f":"Universidade Federal do Amazonas - Instituto de Computação","t":"Ex Dr. Luan Cuidará Disso","p":107},{"n":"Caio Candido","u":"DPI-UFV","f":"Universidade Federal de Viçosa","t":"VoceAchouUbáBão?","p":113},{"n":"Cleber Luiz Junior","u":"DPI-UFV","f":"Universidade Federal de Viçosa","t":"VoceAchouUbáBão?","p":113},{"n":"Fernando Reis","u":"DPI-UFV","f":"Universidade Federal de Viçosa","t":"VoceAchouUbáBão?","p":113},{"n":"Adrielly Medeiros","u":"UnB","f":"Universidade de Brasília","t":"Escolher o Nome do Time é NP","p":120},{"n":"Iasmim Freitas","u":"UnB","f":"Universidade de Brasília","t":"Escolher o Nome do Time é NP","p":120},{"n":"Isabela Souza","u":"UnB","f":"Universidade de Brasília","t":"Escolher o Nome do Time é NP","p":120},{"n":"Daniel Cavazza","u":"UNIFEI","f":"Universidade Federal de Itajubá - Campus Itajubá","t":"Amigos do Ed","p":129},{"n":"Gabriel Prange Vilela","u":"UNIFEI","f":"Universidade Federal de Itajubá - Campus Itajubá","t":"Amigos do Ed","p":129},{"n":"Caue Santana","u":"Mackenzie","f":"Universidade Presbiteriana Mackenzie","t":"Ministério da resenha","p":135},{"n":"Gustavo Garabetti","u":"Mackenzie","f":"Universidade Presbiteriana Mackenzie","t":"Ministério da resenha","p":135},{"n":"João Pedro Vieira","u":"Mackenzie","f":"Universidade Presbiteriana Mackenzie","t":"Ministério da resenha","p":135},{"n":"Gabriel Alexandre Richter","u":"UFRGS","f":"Universidade Federal do Rio Grande do Sul","t":"Mario malloc","p":138},{"n":"Marcelo Gonda Stangler","u":"UFRGS","f":"Universidade Federal do Rio Grande do Sul","t":"Mario malloc","p":138},{"n":"Renan Augusto da Silva Zen","u":"UFRGS","f":"Universidade Federal do Rio Grande do Sul","t":"Mario malloc","p":138},{"n":"Artur Rocha","u":"UESB","f":"Universidade Estadual do Sudoeste da Bahia","t":"Deadlock","p":170},{"n":"Gabriel dos Santos","u":"UESB","f":"Universidade Estadual do Sudoeste da Bahia","t":"Deadlock","p":170},{"n":"Vinícius Moreira","u":"UESB","f":"Universidade Estadual do Sudoeste da Bahia","t":"Deadlock","p":170},{"n":"Gabriel Dimant","u":"EACH-USP","f":"Universidade de São Paulo - Escola de Artes, Ciências e Humanidades","t":"Olá,sou Marcus Peixoto","p":172},{"n":"Luan Pinheiro","u":"EACH-USP","f":"Universidade de São Paulo - Escola de Artes, Ciências e Humanidades","t":"Olá,sou Marcus Peixoto","p":172},{"n":"Marcus Peixoto","u":"EACH-USP","f":"Universidade de São Paulo - Escola de Artes, Ciências e Humanidades","t":"Olá,sou Marcus Peixoto","p":172},{"n":"Giancarlo Oliveira Teixeira","u":"UFSJ - SEDE","f":"Universidade Federal de São João Del Rei - SEDE","t":"Tesouros","p":181},{"n":"Sergio Alexsandro de Melo Gonzaga","u":"UFSJ - SEDE","f":"Universidade Federal de São João Del Rei - SEDE","t":"Tesouros","p":181},{"n":"Vítor Oliveira Amorim","u":"UFSJ - SEDE","f":"Universidade Federal de São João Del Rei - SEDE","t":"Tesouros","p":181},{"n":"Dimitri Martins","u":"UFS","f":"Universidade Federal de Sergipe","t":"Chi plus plus","p":200},{"n":"Pericles Leite","u":"UFS","f":"Universidade Federal de Sergipe","t":"Chi plus plus","p":200},{"n":"Armando Vinicius B. Barbosa","u":"UFC-Russas","f":"Universidade Federal do Ceará - Campus Russas","t":"LazyInit","p":222},{"n":"Giulia Saunders","u":"UFC-Russas","f":"Universidade Federal do Ceará - Campus Russas","t":"LazyInit","p":222},{"n":"Thiago Pereira","u":"UFC-Russas","f":"Universidade Federal do Ceará - Campus Russas","t":"LazyInit","p":222},{"n":"Lucas Ferreira da Silva","u":"IFAM Parintins","f":"Instituto Federal do Amazonas - Campus Parintins","t":"Posniak： Dois Marotos e Meio","p":309},{"n":"Matheus Henrique Vieira Ramos Nobre","u":"IFAM Parintins","f":"Instituto Federal do Amazonas - Campus Parintins","t":"Posniak： Dois Marotos e Meio","p":309},{"n":"Robert Marialva Cruz","u":"IFAM Parintins","f":"Instituto Federal do Amazonas - Campus Parintins","t":"Posniak： Dois Marotos e Meio","p":309},{"n":"Lucas Henrique Oliveira Souza","u":"UEPA - Parauapebas","f":"Universidade do Estado do Pará - Campus Parauapebas","t":"8-bitinhos👾","p":878},{"n":"vitoria ribas","u":"UEPA - Parauapebas","f":"Universidade do Estado do Pará - Campus Parauapebas","t":"8-bitinhos👾","p":878}];
+const TEAMS=[{"u":"UFU","f":"Universidade Federal de Uberlândia","t":"Praise the Sonic","p":1},{"u":"UNICAMP","f":"Universidade Estadual de Campinas","t":"Enemy Leo used Appeal! It's super effective! Pikachu fainted!","p":2},{"u":"UF Santa Catarina","f":"Universidade Federal de Santa Catarina","t":"3 macacos infinitos com heurística","p":3},{"u":"UFPE","f":"Universidade Federal de Pernambuco","t":"Shadow, o ouriço-cacheiro-viajante","p":4},{"u":"UNICAMP","f":"Universidade Estadual de Campinas","t":"Los Pitufos","p":5},{"u":"UnB","f":"Universidade de Brasília","t":"Flamengokart 8 Deluxe","p":6},{"u":"UFMG","f":"Universidade Federal de Minas Gerais","t":"passamos o construtivo no perchute","p":7},{"u":"UnB","f":"Universidade de Brasília","t":"Abri a caixa e meu gato virou um WA","p":8},{"u":"UFRJ","f":"Universidade Federal do Rio de Janeiro","t":"Chris, aqui acabou","p":10},{"u":"USP Ribeirão Preto","f":"Universidade de São Paulo - Campus Ribeirão Preto","t":"brutal","p":14},{"u":"ITA","f":"Instituto Tecnológico de Aeronautica","t":"Acho que é fluxo","p":15},{"u":"UFG","f":"Universidade Federal de Goiás","t":"Monkeys： AKBIDKH","p":16},{"u":"PUC Rio de Janeiro","f":"Pontificia Universidade Catolica do Rio de Janeiro","t":"Viúvos do Thomaz","p":17},{"u":"USP","f":"Universidade de São Paulo","t":"Em minha defesa, ainda tava tentando resolver o warm-up","p":18},{"u":"USP São Carlos","f":"Universidade de São Paulo - Campus de São Carlos","t":"Apenas caqui em Mogi das Cruzes - SP","p":19},{"u":"UFMG","f":"Universidade Federal de Minas Gerais","t":"Fa clube do wmwmjr","p":27},{"u":"UNIOESTE Foz do Iguaçu","f":"Universidade Estadual do Oeste do Paraná - Campus de Foz do Iguaçu","t":"Sem saber que era só fazer, ele foi lá e não fez","p":30},{"u":"UDESC","f":"Universidade do Estado de Santa Catarina","t":"Catarinense* Not Found","p":32},{"u":"PUC-Goiás","f":"Pontifícia Universidade Católica de Goiás","t":"BFS²： Bora Fazer Six Seven","p":33},{"u":"UFBA","f":"Universidade Federal da Bahia","t":"Império Baiantino","p":39},{"u":"UFCG","f":"Universidade Federal de Campina Grande","t":"Why don’t we all aim for AC on every problem?","p":41},{"u":"IMPA","f":"Instituto de Matemática Pura e Aplicada","t":"Temos que ver isso ai hein","p":46},{"u":"FEI","f":"Centro Universitário da FEI","t":"Três Programadores Demais","p":51},{"u":"UFF","f":"Universidade Federal Fluminense","t":"Michael Eles não Ligam pra Gente","p":57},{"u":"UFABC","f":"Universidade Federal do ABC","t":"Os alunos mais fracos do Bigas","p":60},{"u":"UnB/FGA","f":"Universidade de Brasília - Faculdade UnB Gama","t":"Dedinhos Mágicos","p":64},{"u":"UFC","f":"Universidade Federal do Ceará","t":"Venderam meu Cabrito","p":65},{"u":"UFAL","f":"Universidade Federal de Alagoas","t":"comi tle e agora tô com fastio","p":66},{"u":"UFMG","f":"Universidade Federal de Minas Gerais","t":"Guerreiras do K.pop()","p":72},{"u":"UFRN","f":"Universidade Federal do Rio Grande do Norte","t":"Alice in the Uberland","p":75},{"u":"UNICAMP","f":"Universidade Estadual de Campinas","t":"sdds do peru","p":78},{"u":"UFPI","f":"Universidade Federal do Piauí","t":"Chuta uma DP aí","p":89},{"u":"UNISINOS","f":"Universidade do Vale do Rio dos Sinos","t":"o problema mais difícil é escolher o nome da equipe","p":94},{"u":"IFSP - Salto","f":"IFSP - Salto","t":"nunca foi sort()","p":99},{"u":"UFPR-JA","f":"Universidade Federal do Paraná - Jandaia do Sul","t":"Sucumbam","p":105},{"u":"IComp/UFAM","f":"Universidade Federal do Amazonas - Instituto de Computação","t":"Ex Dr. Luan Cuidará Disso","p":107},{"u":"IFPI Parnaíba","f":"Instituto Federal do Piauí - Campus Parnaíba","t":"ativar_resenha();","p":108},{"u":"UDESC","f":"Universidade do Estado de Santa Catarina","t":"As Trombadinhas","p":110},{"u":"DPI-UFV","f":"Universidade Federal de Viçosa","t":"VoceAchouUbáBão?","p":113},{"u":"USP São Carlos","f":"Universidade de São Paulo - Campus de São Carlos","t":"Lulu da Palmerense","p":117},{"u":"CEFET-MG Nova Gameleira 2","f":"Centro Federal de Educação Tecnológica de Minas Gerais - Campus Nova Gameleira 2","t":"Pinto de Baixa Latência","p":118},{"u":"UnB","f":"Universidade de Brasília","t":"Escolher o Nome do Time é NP","p":120},{"u":"UNIFEI","f":"Universidade Federal de Itajubá - Campus Itajubá","t":"Amigos do Ed","p":129},{"u":"Mackenzie","f":"Universidade Presbiteriana Mackenzie","t":"Ministério da resenha","p":135},{"u":"UFRGS","f":"Universidade Federal do Rio Grande do Sul","t":"Mario malloc","p":138},{"u":"UNOESTE","f":"Universidade do Oeste Paulista","t":"Mega Brain, calcule o que sobra","p":148},{"u":"Fatec Sorocaba","f":"Faculdade de Tecnologia de Sorocaba","t":"Apague a Luz e Martele o Teclado","p":162},{"u":"UESB","f":"Universidade Estadual do Sudoeste da Bahia","t":"Deadlock","p":170},{"u":"EACH-USP","f":"Universidade de São Paulo - Escola de Artes, Ciências e Humanidades","t":"Olá,sou Marcus Peixoto","p":172},{"u":"UFSJ - SEDE","f":"Universidade Federal de São João Del Rei - SEDE","t":"Tesouros","p":181},{"u":"IFTM Uberaba Parque Tecnológico","f":"Instituto Federal de Educação, Ciência e Tecnologia do Triângulo Mineiro - Campus Uberaba Parque Tecnológico","t":"COBOL Fora da Lei","p":188},{"u":"UFS","f":"Universidade Federal de Sergipe","t":"Chi plus plus","p":200},{"u":"UFSCar","f":"Universidade Federal de São Carlos","t":"We love you, Sabrina Carpenter","p":205},{"u":"UFC-Russas","f":"Universidade Federal do Ceará - Campus Russas","t":"LazyInit","p":222},{"u":"CEFET-MG Timóteo","f":"Centro Federal de Educação Tecnológica de Minas Gerais - Campus Timóteo","t":"Mans of Indecision Tree (MIT)","p":225},{"u":"FACOM - UFMS","f":"Faculdade de Computação - UFMS","t":"isso eh dp divisão e desista","p":251},{"u":"CESUPA","f":"Centro Universitario do Para - CESUPA","t":"Comemos Só Frango com Catupiry!!!","p":254},{"u":"UFFS","f":"Universidade Federal da Fronteira Sul","t":"LSJI Miners","p":287},{"u":"IF Goiano - Rio Verde","f":"Instituto Federal Goiano - Campus Rio Verde","t":"Bugou Mas Vai","p":304},{"u":"IFAM Parintins","f":"Instituto Federal do Amazonas - Campus Parintins","t":"Posniak： Dois Marotos e Meio","p":309},{"u":"UFES","f":"Universidade Federal do Espirito Santo","t":"Os Aiatolás","p":318},{"u":"SENAI AP","f":"SENAI AMAPÁ","t":"Dark Tech","p":425},{"u":"UNIR","f":"Fundação Universidade Federal de Rondônia","t":"6progs7amadores","p":429},{"u":"UFMA","f":"Universidade Federal do Maranhão","t":"UFMA Lajota","p":478},{"u":"UEPA - Parauapebas","f":"Universidade do Estado do Pará - Campus Parauapebas","t":"8-bitinhos👾","p":878}];
+
+let ROSTER_SRC = 'embutida';
+function rebuildTeams(){ const m=new Map(); ROSTER.forEach(r=>{ const k=r.u+'|'+r.t; if(!m.has(k)) m.set(k,{u:r.u,f:r.f,t:r.t,p:r.p}); }); TEAMS.length=0; [...m.values()].sort((a,b)=>(a.p||9999)-(b.p||9999)).forEach(x=>TEAMS.push(x)); }
+try{ const c=JSON.parse(localStorage.getItem('pax-roster')||'null'); if(c && Array.isArray(c.rows) && c.rows.length){ ROSTER=c.rows; ROSTER_SRC='cache '+c.at.slice(0,10); rebuildTeams(); } }catch(e){}
+if(ENDPOINT){
+  fetch(ENDPOINT+'?roster=1',{method:'GET'}).then(r=>r.ok?r.json():Promise.reject(r.status)).then(rows=>{
+    if(Array.isArray(rows) && rows.length){ ROSTER=rows; ROSTER_SRC='planilha'; rebuildTeams();
+      try{ localStorage.setItem('pax-roster',JSON.stringify({at:new Date().toISOString(),rows})); }catch(e){}
+      const h=document.querySelector('#roster-hint'); if(h) h.textContent='Lista atualizada da planilha ('+rows.length+' nomes).'; }
+  }).catch(()=>{});
+}
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const norm = s => (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const state = { page:1, picked:null, manual:false, conhecia:'', interesses:[] };
+const steps = $$('.steps i');
+const titles = {1:['Oi, maratonista.','A Pax está na final. Deixa seu contato com a gente, leva menos de um minuto.'],
+                2:['Quase lá.','Telefone e e-mail, e a gente combina o resto depois.'],
+                3:['Sobre a Pax.','Um time de ex-finalistas mundiais ajudando a polícia a resolver crimes de verdade.'],
+                4:['Obrigado.','Agora a gente conversa.']};
+
+function show(n){
+  state.page=n;
+  $$('.page').forEach(p=>p.hidden = +p.dataset.page!==n);
+  steps.forEach((s,i)=>s.classList.toggle('on', i < Math.min(n,3)));
+  $('#title').textContent=titles[n][0]; $('#lead').textContent=titles[n][1];
+  window.scrollTo({top:0,behavior:'smooth'});
+  const first=$('.page[data-page="'+n+'"] input, .page[data-page="'+n+'"] button.chip');
+  if(first && n<4) setTimeout(()=>first.focus({preventScroll:true}),320);
+}
+function err(n,msg){ const e=$('#err'+n); e.textContent=msg||''; e.hidden=!msg; }
+
+/* ---- autocomplete de nome ---- */
+const nome=$('#nome'), ac=$('#ac'), who=$('#who');
+function renderAc(q){
+  const t=norm(q.trim());
+  if(t.length<2){ ac.hidden=true; return; }
+  const hits=ROSTER.filter(r=>norm(r.n).includes(t)||norm(r.t).includes(t)||norm(r.u).includes(t)).slice(0,8);
+  ac.innerHTML='';
+  if(!hits.length){ ac.innerHTML='<div class="none">Nenhum nome parecido. Você pode preencher à mão abaixo.</div>'; ac.hidden=false; return; }
+  hits.forEach(r=>{ const b=document.createElement('button'); b.type='button'; b.setAttribute('role','option');
+    b.innerHTML='<span></span><span class="s"></span>'; b.firstChild.textContent=r.n; b.lastChild.textContent=r.u+' · '+r.t+' · #'+r.p+' na 1ª fase';
+    b.addEventListener('click',()=>pick(r)); ac.appendChild(b); });
+  ac.hidden=false;
+}
+function pick(r){ state.picked=r; state.manual=false; nome.value=r.n; ac.hidden=true; $('#manual').hidden=true;
+  $('#who-n').textContent=r.n; $('#who-t').textContent='Time '+r.t+' · '+r.u+' · #'+r.p+' geral na 1ª fase'; $('#who-f').textContent=r.f; who.hidden=false; err(1,''); }
+nome.addEventListener('input',()=>{ state.picked=null; who.hidden=true; renderAc(nome.value); });
+nome.addEventListener('focus',()=>renderAc(nome.value));
+nome.addEventListener('keydown',e=>{ if(e.key==='ArrowDown'){ const f=ac.querySelector('button'); if(f){e.preventDefault();f.focus();} } if(e.key==='Escape') ac.hidden=true; });
+ac.addEventListener('keydown',e=>{ const bs=$$('button',ac); const i=bs.indexOf(document.activeElement);
+  if(e.key==='ArrowDown'&&bs[i+1]){e.preventDefault();bs[i+1].focus();} if(e.key==='ArrowUp'){e.preventDefault(); (bs[i-1]||nome).focus();} if(e.key==='Escape'){ac.hidden=true;nome.focus();} });
+document.addEventListener('click',e=>{ if(!e.target.closest('.ac')) { ac.hidden=true; $('#ac-t').hidden=true; } });
+$('#manual-btn').addEventListener('click',()=>{ state.manual=true; state.picked=null; who.hidden=true; ac.hidden=true; $('#manual').hidden=false; $('#m-fac').focus(); });
+
+/* autocomplete de time (modo manual) */
+const mt=$('#m-time'), act=$('#ac-t');
+mt.addEventListener('input',()=>{ const t=norm(mt.value.trim()); if(t.length<2){act.hidden=true;return;}
+  const hits=TEAMS.filter(x=>norm(x.t).includes(t)||norm(x.u).includes(t)).slice(0,6); act.innerHTML='';
+  if(!hits.length){act.hidden=true;return;}
+  hits.forEach(x=>{ const b=document.createElement('button'); b.type='button'; b.innerHTML='<span></span><span class="s"></span>'; b.firstChild.textContent=x.t; b.lastChild.textContent=x.u+' · '+x.f;
+    b.addEventListener('click',()=>{ mt.value=x.t; if(!$('#m-fac').value) $('#m-fac').value=x.f; act.hidden=true; }); act.appendChild(b); });
+  act.hidden=false; });
+
+/* ---- navegação ---- */
+$$('[data-next]').forEach(b=>b.addEventListener('click',()=>{
+  const n=+b.dataset.next;
+  if(n===2){ const v=nome.value.trim();
+    if(v.length<3){ err(1,'Escreva seu nome para continuar.'); nome.focus(); return; }
+    if(!state.picked && !state.manual){ state.manual=true; $('#manual').hidden=false; err(1,'Não achamos esse nome na lista. Confirme sua faculdade e seu time.'); $('#m-fac').focus(); return; }
+    if(state.manual && !$('#m-fac').value.trim()){ err(1,'Diga sua faculdade.'); $('#m-fac').focus(); return; }
+    err(1,''); }
+  if(n===3){ const tel=$('#tel').value.replace(/\D/g,''); const em=$('#email').value.trim();
+    if(tel.length<10){ err(2,'Telefone com DDD, por favor.'); $('#tel').focus(); return; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ err(2,'Esse e-mail não parece válido.'); $('#email').focus(); return; }
+    err(2,''); }
+  show(n);
+}));
+$$('[data-prev]').forEach(b=>b.addEventListener('click',()=>show(+b.dataset.prev)));
+$('#tel').addEventListener('input',e=>{ let d=e.target.value.replace(/\D/g,'').slice(0,11); let o=d;
+  if(d.length>2) o='('+d.slice(0,2)+') '+d.slice(2); if(d.length>7) o='('+d.slice(0,2)+') '+d.slice(2,7)+'-'+d.slice(7); e.target.value=o; });
+
+$$('#conhecia .chip').forEach(c=>c.addEventListener('click',()=>{ $$('#conhecia .chip').forEach(x=>x.setAttribute('aria-checked','false')); c.setAttribute('aria-checked','true'); state.conhecia=c.dataset.v; err(3,''); }));
+$$('#interesses .chip').forEach(c=>c.addEventListener('click',()=>{ const on=c.getAttribute('aria-pressed')!=='true'; c.setAttribute('aria-pressed',String(on));
+  state.interesses=$$('#interesses .chip[aria-pressed="true"]').map(x=>x.dataset.v); }));
+
+/* ---- envio ---- */
+let dbp=null, userp=null;
+if(window.claude && typeof window.claude.use==='function'){ dbp=window.claude.use('db').catch(()=>null); userp=window.claude.use('user').catch(()=>null); }
+
+function payload(){
+  const p=state.picked;
+  return { id: p ? (p.id || 'SEM_ID') : 'MANUAL_ADDED',
+    ts:new Date().toISOString(),
+    nome:nome.value.trim(),
+    faculdade: p? p.f : $('#m-fac').value.trim(),
+    sigla: p? p.u : '',
+    time: p? p.t : $('#m-time').value.trim(),
+    posicao: p? p.p : null,
+    na_lista: !!p,
+    telefone:$('#tel').value.trim(), email:$('#email').value.trim(),
+    conhecia:state.conhecia, interesses:state.interesses, achou:$('#achou').value.trim(), quem:$('#quem').value.trim(),
+    origem: (window.claude && typeof window.claude.use==='function')? 'artifact' : 'site' };
+}
+async function send(data){
+  if(ENDPOINT){
+    try{
+      await fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(data)});
+      return 'endpoint';
+    }catch(e){ /* dentro do artifact a rede externa é bloqueada: cai para o banco do artifact */ }
+  }
+  const db = dbp? await dbp : null; const user = userp? await userp : null;
+  const uid = user? await user.id() : null;
+  if(db && uid){ await db.doc('inscricoes/'+uid).collection('entradas').add(data); return 'db'; }
+  throw new Error('no-sink');
+}
+$('#form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!state.conhecia){ err(3,'Conta pra gente: você já conhecia a Pax?'); return; }
+  const btn=$('#send'); btn.disabled=true; btn.textContent='Enviando…'; err(3,'');
+  try{ await send(payload()); show(4); }
+  catch(ex){
+    const msg = ex && ex.message==='no-sink'
+      ? 'Este link ainda não está ligado a um destino de respostas. Peça para alguém da Pax abrir o formulário logado, ou use o link oficial do evento.'
+      : 'Não consegui enviar agora. Tenta de novo em alguns segundos.';
+    err(3,msg);
+  } finally { btn.disabled=false; btn.textContent='Enviar'; }
+});
+$('#again').addEventListener('click',()=>{ $('#form').reset(); state.picked=null; state.manual=false; state.conhecia=''; state.interesses=[];
+  who.hidden=true; $('#manual').hidden=true; $$('.chip').forEach(c=>{c.setAttribute('aria-pressed','false');c.setAttribute('aria-checked','false');}); [1,2,3].forEach(n=>err(n,'')); show(1); });
+show(1);
+</script>
+</body></html>
