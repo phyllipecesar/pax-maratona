@@ -70,7 +70,9 @@ main{max-width:640px;margin:0 auto;padding-block:20px 80px;padding-left:max(20px
 .ac-list button:hover,.ac-list button:focus,.ac-list button:active{background:var(--bg);outline:none}
 .ac-list .s{font-size:12px;color:var(--fg-muted)}
 .ac-list .none{padding:14px;font-size:14px;color:var(--fg-muted)}
-.ac-list .alt{border-top:1px solid var(--line-soft);border-radius:0;margin-top:4px;color:var(--fg-muted);font-size:14px}
+.ac-list .alt{border-top:1px solid var(--line-soft);border-radius:0;margin-top:4px;color:var(--fg);font-size:15px;font-weight:600}
+.ac-list .alt span:first-child{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:var(--amarelo)}
+.ac-list .alt span:first-child::after{content:" →"}
 /* Modo busca (celular): o campo fixa no topo e a lista ocupa o resto da área visível acima do teclado. */
 body.searching{overflow:hidden;position:fixed;inset:0;width:100%}
 body.searching .band,body.searching .foot{display:none}
