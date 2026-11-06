@@ -63,11 +63,25 @@ main{max-width:640px;margin:0 auto;padding-block:20px 80px;padding-left:max(20px
 .err[hidden]{display:none}
 
 .ac{position:relative}
-.ac-list{position:static;margin-top:6px;background:var(--card);border:1px solid var(--line-soft);border-radius:var(--r-md);max-height:280px;overflow:auto;padding:4px;-webkit-overflow-scrolling:touch}
-.ac-list button{display:flex;flex-direction:column;gap:2px;width:100%;text-align:left;background:none;border:0;padding:10px 12px;border-radius:var(--r-sm);cursor:pointer}
-.ac-list button:hover,.ac-list button:focus{background:var(--bg);outline:none}
+.ac-head{display:flex;gap:8px;align-items:stretch} .ac-head input{flex:1;min-width:0}
+.ac-head .close{display:none;font-size:15px;padding:0 16px;border:1px solid var(--line-soft);border-radius:var(--r-md);background:transparent;color:var(--fg);cursor:pointer;white-space:nowrap}
+.ac-list{position:static;margin-top:6px;background:var(--card);border:1px solid var(--line-soft);border-radius:var(--r-md);max-height:280px;overflow:auto;padding:4px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
+.ac-list button{display:flex;flex-direction:column;justify-content:center;gap:2px;width:100%;min-height:56px;text-align:left;background:none;border:0;padding:10px 14px;border-radius:var(--r-sm);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ac-list button:hover,.ac-list button:focus,.ac-list button:active{background:var(--bg);outline:none}
 .ac-list .s{font-size:12px;color:var(--fg-muted)}
-.ac-list .none{padding:10px 12px;font-size:14px;color:var(--fg-muted)}
+.ac-list .none{padding:14px;font-size:14px;color:var(--fg-muted)}
+.ac-list .alt{border-top:1px solid var(--line-soft);border-radius:0;margin-top:4px;color:var(--fg-muted);font-size:14px}
+/* Modo busca (celular): o campo fixa no topo e a lista ocupa o resto da área visível acima do teclado. */
+body.searching{overflow:hidden;position:fixed;inset:0;width:100%}
+body.searching .band,body.searching .foot{display:none}
+body.searching main{position:fixed;top:0;left:0;right:0;height:var(--vvh,100vh);max-width:none;margin:0;padding:0;display:flex;flex-direction:column}
+body.searching .card{flex:1;min-height:0;display:flex;flex-direction:column;gap:0;border:0;border-radius:0;padding:12px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px))}
+body.searching .page[data-page="1"]{flex:1;min-height:0;display:flex;flex-direction:column;gap:0;animation:none}
+body.searching .page[data-page="1"]>*:not(.field.ac){display:none!important}
+body.searching .field.ac{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px}
+body.searching .field.ac label,body.searching .field.ac .hint{display:none}
+body.searching .ac-head .close{display:inline-flex;align-items:center}
+body.searching .ac-list{flex:1;min-height:0;max-height:none;margin:0;display:block}
 
 .who{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--line-soft);border-radius:var(--r-md)}
 .who b{font-weight:600}
@@ -124,7 +138,7 @@ main{max-width:640px;margin:0 auto;padding-block:20px 80px;padding-left:max(20px
       <h2 class="q">Qual é o seu nome?</h2>
       <div class="field ac">
         <label for="nome">Nome</label>
-        <input id="nome" name="nome" type="text" placeholder="Comece a digitar" required autocapitalize="words" spellcheck="false">
+        <div class="ac-head"><input id="nome" name="nome" type="text" placeholder="Comece a digitar" required autocapitalize="words" spellcheck="false" enterkeyhint="search"><button type="button" class="close" id="ac-close">Fechar</button></div>
         <div id="ac" class="ac-list" hidden role="listbox"></div>
         <span class="hint" id="roster-hint">Buscamos na lista dos 65 times classificados.</span>
       </div>
@@ -214,7 +228,7 @@ if(ENDPOINT){
 }
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
-const norm = s => (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const norm = s => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const state = { page:1, picked:null, manual:false, conhecia:'', interesses:[] };
 const steps = $$('.steps i');
 const titles = {1:['Oi, maratonista.','A Pax está na final. Deixa seu contato com a gente, leva menos de um minuto.'],
@@ -234,41 +248,49 @@ function show(n){
 function err(n,msg){ const e=$('#err'+n); e.textContent=msg||''; e.hidden=!msg; }
 
 /* ---- autocomplete de nome ---- */
-const nome=$('#nome'), ac=$('#ac'), who=$('#who');
-/* teclado do celular: rola o campo para o topo e limita a lista ao espaço visível acima do teclado */
-function fitAc(input, list){
-  if(list.hidden) return;
-  const vv=window.visualViewport; const vh=vv? vv.height : window.innerHeight; const vtop=vv? vv.offsetTop : 0;
-  const r=input.getBoundingClientRect();
-  const want=12; // distância desejada do campo ao topo da área visível
-  if(r.top-vtop>want+8){ window.scrollBy({top:(r.top-vtop)-want,behavior:'auto'}); }
-  const r2=input.getBoundingClientRect();
-  const avail=Math.floor(vh-(r2.bottom-vtop)-6-12);
-  list.style.maxHeight=Math.max(120,Math.min(320,avail))+'px';
+const nome=$('#nome'), ac=$('#ac'), who=$('#who'), acClose=$('#ac-close');
+/* Modo busca no celular: sem rolagem da página e sem recálculo por tecla. A altura da lista só depende
+   do teclado (visualViewport), nunca da quantidade de resultados. */
+const touchMode = matchMedia('(pointer: coarse)').matches && matchMedia('(max-width: 760px)').matches;
+let searching=false;
+function setVVH(){ const vv=window.visualViewport; document.documentElement.style.setProperty('--vvh', Math.round(vv? vv.height : innerHeight)+'px'); }
+function enterSearch(){ if(!touchMode || searching) return; searching=true; setVVH(); document.body.classList.add('searching'); window.scrollTo(0,0); renderAc(nome.value); }
+function exitSearch(){ if(!searching) return; searching=false; document.body.classList.remove('searching'); document.documentElement.style.setProperty('--vvh',''); }
+if(window.visualViewport){
+  visualViewport.addEventListener('resize',()=>{ if(searching) setVVH(); });
+  visualViewport.addEventListener('scroll',()=>{ if(searching && visualViewport.offsetTop>0) window.scrollTo(0,0); });
 }
-let acActive=null;
-function watchAc(input,list){ acActive=[input,list]; requestAnimationFrame(()=>fitAc(input,list)); setTimeout(()=>fitAc(input,list),300); }
-if(window.visualViewport){ visualViewport.addEventListener('resize',()=>{ if(acActive) fitAc(...acActive); }); }
+function score(r,t){ const n=norm(r.n); if(n.startsWith(t)) return 0; if(n.split(' ').some(w=>w.startsWith(t))) return 1; if(n.includes(t)) return 2; if(norm(r.t).includes(t)||norm(r.u).includes(t)) return 3; return 9; }
+function item(title, sub, cls){ const b=document.createElement('button'); b.type='button'; b.setAttribute('role','option'); if(cls) b.className=cls;
+  const t1=document.createElement('span'); t1.textContent=title; b.appendChild(t1);
+  if(sub){ const t2=document.createElement('span'); t2.className='s'; t2.textContent=sub; b.appendChild(t2); }
+  return b; }
 function renderAc(q){
   const t=norm(q.trim());
-  if(t.length<2){ ac.hidden=true; return; }
-  const hits=ROSTER.filter(r=>norm(r.n).includes(t)||norm(r.t).includes(t)||norm(r.u).includes(t)).slice(0,8);
-  ac.innerHTML='';
-  if(!hits.length){ ac.innerHTML='<div class="none">Nenhum nome parecido. Você pode preencher à mão abaixo.</div>'; ac.hidden=false; watchAc(nome,ac); return; }
-  hits.forEach(r=>{ const b=document.createElement('button'); b.type='button'; b.setAttribute('role','option');
-    b.innerHTML='<span></span><span class="s"></span>'; b.firstChild.textContent=r.n; b.lastChild.textContent=r.u+' · '+r.t+' · #'+r.p+' na 1ª fase';
-    b.addEventListener('click',()=>pick(r)); ac.appendChild(b); });
-  ac.hidden=false; watchAc(nome,ac);
+  if(t.length<2 && !searching){ ac.hidden=true; return; }
+  const hits=t.length<2? [] : ROSTER.map(r=>[score(r,t),r]).filter(x=>x[0]<9).sort((a,b)=>a[0]-b[0]||(a[1].p||999)-(b[1].p||999)).slice(0, searching? 40 : 8).map(x=>x[1]);
+  ac.textContent='';
+  if(t.length<2){ const d=document.createElement('div'); d.className='none'; d.textContent='Digite pelo menos duas letras do seu nome.'; ac.appendChild(d); }
+  else if(!hits.length){ const d=document.createElement('div'); d.className='none'; d.textContent='Nenhum nome parecido na lista dos 65 times.'; ac.appendChild(d); }
+  hits.forEach(r=>{ const b=item(r.n, r.u+' · '+r.t+' · #'+r.p+' na 1ª fase'); b.addEventListener('click',()=>pick(r)); ac.appendChild(b); });
+  if(searching || !hits.length){ const alt=item('Não achei meu nome, vou preencher à mão', null, 'alt'); alt.addEventListener('click',goManual); ac.appendChild(alt); }
+  ac.hidden=false;
 }
-function pick(r){ state.picked=r; state.manual=false; nome.value=r.n; ac.hidden=true; $('#manual').hidden=true;
+function pick(r){ state.picked=r; state.manual=false; nome.value=r.n; ac.hidden=true; $('#manual').hidden=true; exitSearch(); nome.blur();
   $('#who-n').textContent=r.n; $('#who-t').textContent='Time '+r.t+' · '+r.u+' · #'+r.p+' geral na 1ª fase'; $('#who-f').textContent=r.f; who.hidden=false; err(1,''); }
+function goManual(){ state.manual=true; state.picked=null; who.hidden=true; ac.hidden=true; exitSearch(); $('#manual').hidden=false; setTimeout(()=>$('#m-fac').focus(),50); }
 nome.addEventListener('input',()=>{ state.picked=null; who.hidden=true; renderAc(nome.value); });
-nome.addEventListener('focus',()=>{ renderAc(nome.value); setTimeout(()=>{ const r=nome.getBoundingClientRect(); const vt=window.visualViewport? visualViewport.offsetTop:0; if(r.top-vt>20) window.scrollBy({top:(r.top-vt)-12,behavior:'smooth'}); },250); });
-nome.addEventListener('keydown',e=>{ if(e.key==='ArrowDown'){ const f=ac.querySelector('button'); if(f){e.preventDefault();f.focus();} } if(e.key==='Escape') ac.hidden=true; });
+nome.addEventListener('focus',()=>{ enterSearch(); renderAc(nome.value); });
+nome.addEventListener('blur',()=>{ setTimeout(()=>{ if(searching && document.activeElement!==nome && !ac.contains(document.activeElement)){ exitSearch(); ac.hidden=true; } },120); });
+nome.addEventListener('keydown',e=>{ if(e.key==='ArrowDown'){ const f=ac.querySelector('button'); if(f){e.preventDefault();f.focus();} } if(e.key==='Escape'){ ac.hidden=true; exitSearch(); } if(e.key==='Enter'){ e.preventDefault(); const f=ac.querySelector('button:not(.alt)'); if(f && searching) f.click(); } });
+/* tocar na lista não tira o foco do campo: o teclado fica e o toque vira clique, não blur */
+ac.addEventListener('pointerdown',e=>{ e.preventDefault(); });
+ac.addEventListener('mousedown',e=>{ e.preventDefault(); });
 ac.addEventListener('keydown',e=>{ const bs=$$('button',ac); const i=bs.indexOf(document.activeElement);
-  if(e.key==='ArrowDown'&&bs[i+1]){e.preventDefault();bs[i+1].focus();} if(e.key==='ArrowUp'){e.preventDefault(); (bs[i-1]||nome).focus();} if(e.key==='Escape'){ac.hidden=true;nome.focus();} });
-document.addEventListener('click',e=>{ if(!e.target.closest('.ac')) { ac.hidden=true; $('#ac-t').hidden=true; } });
-$('#manual-btn').addEventListener('click',()=>{ state.manual=true; state.picked=null; who.hidden=true; ac.hidden=true; $('#manual').hidden=false; $('#m-fac').focus(); });
+  if(e.key==='ArrowDown'&&bs[i+1]){e.preventDefault();bs[i+1].focus();} if(e.key==='ArrowUp'){e.preventDefault(); (bs[i-1]||nome).focus();} if(e.key==='Escape'){ac.hidden=true;exitSearch();nome.focus();} });
+acClose.addEventListener('click',()=>{ exitSearch(); ac.hidden=true; nome.blur(); });
+document.addEventListener('click',e=>{ if(searching) return; if(!e.target.closest('.ac')) { ac.hidden=true; $('#ac-t').hidden=true; } });
+$('#manual-btn').addEventListener('click',goManual);
 
 /* autocomplete de time (modo manual) */
 const mt=$('#m-time'), act=$('#ac-t');
@@ -277,7 +299,7 @@ mt.addEventListener('input',()=>{ const t=norm(mt.value.trim()); if(t.length<2){
   if(!hits.length){act.hidden=true;return;}
   hits.forEach(x=>{ const b=document.createElement('button'); b.type='button'; b.innerHTML='<span></span><span class="s"></span>'; b.firstChild.textContent=x.t; b.lastChild.textContent=x.u+' · '+x.f;
     b.addEventListener('click',()=>{ mt.value=x.t; if(!$('#m-fac').value) $('#m-fac').value=x.f; act.hidden=true; }); act.appendChild(b); });
-  act.hidden=false; watchAc(mt,act); });
+  act.hidden=false; });
 
 /* ---- navegação ---- */
 $$('[data-next]').forEach(b=>b.addEventListener('click',()=>{
